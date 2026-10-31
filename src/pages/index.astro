@@ -1,0 +1,30 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .filter(post => !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Layout title="首页">
+  <section class="hero">
+    <h1>欢迎来到我的博客</h1>
+    <p>记录一些想法、笔记和喜欢的内容。</p>
+  </section>
+
+  <section class="posts">
+    <h2>最新文章</h2>
+    <ul>
+      {posts.map(post => (
+        <li>
+          <a href={`/blog/${post.slug}`}>
+            <h3>{post.data.title}</h3>
+            <time>{post.data.date.toLocaleDateString('zh-CN')}</time>
+            {post.data.description && <p>{post.data.description}</p>}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Layout>

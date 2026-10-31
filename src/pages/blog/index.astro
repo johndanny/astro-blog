@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .filter(post => !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Layout title="所有文章">
+  <h1>所有文章</h1>
+  <ul class="post-list">
+    {posts.map(post => (
+      <li>
+        <a href={`/blog/${post.slug}`}>
+          <h2>{post.data.title}</h2>
+          <time>{post.data.date.toLocaleDateString('zh-CN')}</time>
+          {post.data.description && <p>{post.data.description}</p>}
+        </a>
+      </li>
+    ))}
+  </ul>
+</Layout>
